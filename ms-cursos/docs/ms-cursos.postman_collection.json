@@ -1,181 +1,481 @@
 {
   "info": {
-    "_postman_id": "30454ba3-91e1-4dd6-a7a6-e0d284cbdea6",
-    "name": "ms-cursos",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "59288432",
-    "_collection_link": "https://go.postman.co/collection/59288432-30454ba3-91e1-4dd6-a7a6-e0d284cbdea6?source=collection_link"
+    "name": "ms-cursos (ficha 3) · referencia",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Login Usuarios",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"email\": \"admin@empresa.com\", \"password\": \"Admin2026*\"}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://127.0.0.1:3001/usuarios/login",
-          "protocol": "http",
-          "host": [
-            "127",
-            "0",
-            "0",
-            "1"
-          ],
-          "port": "3001",
-          "path": [
-            "usuarios",
-            "login"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "cursos",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "{{bearer_token_100p}}"
-          }
-        ],
-        "url": {
-          "raw": "http://127.0.0.1:3011/cursos",
-          "protocol": "http",
-          "host": [
-            "127",
-            "0",
-            "0",
-            "1"
-          ],
-          "port": "3011",
-          "path": [
-            "cursos"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "crear curso",
+      "name": "Login (administrador)",
       "request": {
         "method": "POST",
         "header": [
           {
-            "key": "Authorization",
-            "value": "{{bearer_token_100p}}"
+            "key": "Content-Type",
+            "value": "application/json"
           }
         ],
+        "url": "{{usuarios_url}}/usuarios/login",
         "body": {
           "mode": "raw",
-          "raw": "{ \"codigo\": \"AL-101\", \"nombre\": \"Algebra lineal\", \"creditos\": 3, \"cupo\": 30, \"semestre\": \"2026-2\"}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://127.0.0.1:3011/cursos",
-          "protocol": "http",
-          "host": [
-            "127",
-            "0",
-            "0",
-            "1"
-          ],
-          "port": "3011",
-          "path": [
-            "cursos"
-          ]
+          "raw": "{\"email\": \"{{email}}\", \"password\": \"{{password}}\"}"
         }
       },
-      "response": []
-    },
-    {
-      "name": "409",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "{{bearer_token_100p}}"
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const r = pm.response.json();",
+              "pm.collectionVariables.set('token', r.token);",
+              "pm.test('200 y token', () => pm.expect(r.token).to.be.a('string'));"
+            ]
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{ \"codigo\": \"MAT-101\", \"nombre\": \"Matem??ticas Fundamentales\", \"creditos\": 4, \"cupo\": 30, \"semestre\": \"2026-1\"}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://127.0.0.1:3011/cursos",
-          "protocol": "http",
-          "host": [
-            "127",
-            "0",
-            "0",
-            "1"
-          ],
-          "port": "3011",
-          "path": [
-            "cursos"
-          ]
         }
-      },
-      "response": []
+      ]
     },
     {
-      "name": "filtro",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "{{bearer_token_100p}}"
-          }
-        ],
-        "url": {
-          "raw": "http://127.0.0.1:3011/cursos?semestre=2026-2",
-          "protocol": "http",
-          "host": [
-            "127",
-            "0",
-            "0",
-            "1"
-          ],
-          "port": "3011",
-          "path": [
-            "cursos"
-          ],
-          "query": [
+      "name": "Casos de la ficha 3",
+      "item": [
+        {
+          "name": "1 · POST con programa_id 1 → 201 con programa",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{cursos_url}}/cursos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"codigo\": \"MAT-101-1\", \"nombre\": \"Cálculo I\", \"creditos\": 4, \"cupo\": 30, \"semestre\": \"2026-2\", \"programa_id\": 1}"
+            }
+          },
+          "event": [
             {
-              "key": "semestre",
-              "value": "2026-2"
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201', () => pm.response.to.have.status(201));",
+                  "pm.test('trae programa', () => pm.expect(pm.response.json().programa).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2 · POST con programa_id 99 → 400 (no existe)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{cursos_url}}/cursos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"codigo\": \"MAT-101-2\", \"nombre\": \"Cálculo I\", \"creditos\": 4, \"cupo\": 30, \"semestre\": \"2026-2\", \"programa_id\": 99}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3 · POST con programa_id 3 → 400 (regla)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{cursos_url}}/cursos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"codigo\": \"MAT-101-3\", \"nombre\": \"Cálculo I\", \"creditos\": 4, \"cupo\": 30, \"semestre\": \"2026-2\", \"programa_id\": 3}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4 · PUT /cursos/1 con programa_id 3 → 400 (regla)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{cursos_url}}/cursos/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"codigo\": \"MAT-101\", \"nombre\": \"Cálculo I\", \"creditos\": 4, \"cupo\": 30, \"semestre\": \"2026-2\", \"programa_id\": 3}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5 · GET /cursos/1 → 200 con programa",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{cursos_url}}/cursos/1"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200', () => pm.response.to.have.status(200));",
+                  "pm.test('trae programa', () => pm.expect(pm.response.json().programa).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "6 · GET /cursos → 200 (una sola petición ?ids= en ms-programas)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{cursos_url}}/cursos"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "7 · ms-programas detenido: GET /cursos → 200, programa null y aviso",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{cursos_url}}/cursos"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200', () => pm.response.to.have.status(200));",
+                  "pm.test('programa null y aviso', () => { const f = pm.response.json()[0]; pm.expect(f.programa).to.be.null; pm.expect(f.aviso).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8 · ms-programas detenido: POST /cursos → 503",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{cursos_url}}/cursos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"codigo\": \"MAT-101-8\", \"nombre\": \"Cálculo I\", \"creditos\": 4, \"cupo\": 30, \"semestre\": \"2026-2\", \"programa_id\": 1}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('503', () => pm.response.to.have.status(503));"
+                ]
+              }
             }
           ]
         }
-      },
-      "response": []
+      ]
+    },
+    {
+      "name": "Otros códigos",
+      "item": [
+        {
+          "name": "GET /cursos?semestre=2026-1 → 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{cursos_url}}/cursos?semestre=2026-1"
+          }
+        },
+        {
+          "name": "POST código repetido → 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{cursos_url}}/cursos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"codigo\": \"MAT-101-1\", \"nombre\": \"Cálculo I\", \"creditos\": 4, \"cupo\": 30, \"semestre\": \"2026-2\", \"programa_id\": 1}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('409', () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST datos inválidos → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{cursos_url}}/cursos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"codigo\": \"X\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET sin token → 401",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{cursos_url}}/cursos"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /cursos/999 → 404",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{cursos_url}}/cursos/999"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PUT /cursos/3 válido → 200",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{cursos_url}}/cursos/3",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"codigo\": \"COM-110\", \"nombre\": \"Taller de Escritura\", \"creditos\": 3, \"cupo\": 20, \"semestre\": \"2026-1\", \"programa_id\": 3}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /cursos/2 → 204",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{cursos_url}}/cursos/2"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
     }
   ],
   "variable": [
     {
-      "key": "bearer_token_100p",
-      "secret": true
+      "key": "usuarios_url",
+      "value": "http://127.0.0.1:3001"
+    },
+    {
+      "key": "cursos_url",
+      "value": "http://127.0.0.1:3011"
+    },
+    {
+      "key": "email",
+      "value": "admin@empresa.com"
+    },
+    {
+      "key": "password",
+      "value": "cambie-esta-clave"
+    },
+    {
+      "key": "token",
+      "value": ""
     }
   ]
 }
