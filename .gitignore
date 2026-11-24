@@ -1,0 +1,61 @@
+# Compilación de .NET
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+
+bin/
+obj/
+.vs/
+.env
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs y archivos temporales
+*.log
+logs/
+*.tmp
+*.temp
+
+# Variables y secretos locales
+.env
+.env.*
+!.env.example
+secrets.json
+appsettings.Development.json
+appsettings.json
+
+# Publicación y certificados
+publish/
+*.pfx
+*.p12
+*.key
+*.pem
+
+# Paquetes descargados
+packages/
+*.nupkg
+*.snupkg
+
+# Archivos de base de datos locales; no ignora archivos .sql como db/schema.sql
+*.db
+*.sqlite
+*.sqlite3
